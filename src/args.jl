@@ -5,7 +5,7 @@ function ARGUMENTS()
         prog="BackupX",
         description="""
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n
-        **** generate wordlist by given pattern to find backup files ***
+        **** extract url items ***
         \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         """
     )
@@ -14,34 +14,31 @@ function ARGUMENTS()
         help = "single url"
 
         "-U", "--urls"
-        help = "multiple targets urls in file to crawl"
+        help = "multiple urls in file"
 
-        "-s", "--stdin"
-        help = "read from stdin"
+        "--stdin"
+        help = "read url(s) from stdin"
         action = :store_true
 
-        "-p", "--pattern"
-        help = "pattern files"
-        required = true
-
-        "-w", "--wordlist"
-        help = "words"
-
-        "-e", "--extension"
-        help = "extensions"
-
-        "-y", "--year"
-        help = "years"
-
-        "-m", "--month"
-        help = "month"
-
-        "-d", "--day"
-        help = "day"
-
-        "-n", "--number"
-        help = "numbers"
+        "--format"
+        help = "Specify a custom format"
         arg_type = String
+
+        # "-s"
+        # help = "extract scheme of url"
+        # action = :store_true
+
+        # "-S"
+        # help = "gives the URL from the beginning to the scheme"
+        # action = :store_true
+
+        # "-"
+        # help = "gives the URL from the beginning to the scheme"
+        # action = :store_true
+
+        # "-S"
+        # help = "gives the URL from the beginning to the scheme"
+        # action = :store_true
 
         "-o", "--output"
         help = "save output in file"
