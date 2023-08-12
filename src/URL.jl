@@ -30,6 +30,17 @@ struct URL
     _fragment::String
 end
 
+function Decode(st::AbstractString)
+    decode = Dict{String,String}(
+        "&quot;" => "\"",
+        "&amp;" => "&",
+        "&lt;" => "<",
+        "&gt;" => ">",
+        "&#39;" => "'",
+    )
+    return replace(st, decode...)
+end
+
 function extract(host)
     tlds = Set()
     for line in eachline("src/tlds.txt")
@@ -89,6 +100,8 @@ function SHOW(url::URL)
     * path: $(url.path)
     * directory: $(url.directory)
     * file: $(url.file)
+    * file_name: $(url.file_name)
+    * file_extension: $(url.file_extension)
     * query: $(url.query)
     * fragment: $(url.fragment)
     """
@@ -110,7 +123,7 @@ function URL(url::AbstractString)
     directory::String = dirname(path)
     file::String = basename(path)
     file_name::String, file_extension::String = file_apart(file)
-    query::String = !isnothing(parts["query"]) ? parts["query"] : ""
+    query::String = !isnothing(parts["query"]) ? Decode(parts["query"]) : ""
     fragment::String = !isnothing(parts["fragment"]) ? parts["fragment"] : ""
     parameters::Vector{String} = _parameters(query)
     parameters_count::Int32 = length(parameters)
