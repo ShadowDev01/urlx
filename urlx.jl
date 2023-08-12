@@ -53,9 +53,12 @@ function main()
 
     # Format(urls, format)
 
-    me = URL("http://www.dell.com/content/learnmore/learnmore.aspx?%7Eid=dfamilywireless&%7Eline=notebooks&%7Eseries=inspn&amp;amp;%7Emode=popup&amp;amp;l=en&c=us&cs=19&s=dhs")
-
-    SHOW(me)
+    me = URL("https://miti:1234@login.auth.my-admin.seeu.co.com:443/dir1/dir3/file.js?name=ali&amp;&id=63&amp;&age#noone@smsm")
+    # param_pairs(me)
+    # println(_subs(me))
+    # println()
+    # SHOW(me)
+    Json(me)
 
 
 end

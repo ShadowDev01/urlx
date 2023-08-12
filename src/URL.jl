@@ -1,3 +1,6 @@
+using JSON
+using OrderedCollections
+
 struct URL
     scheme::String
     username::String
@@ -33,15 +36,15 @@ end
 function Decode(st::AbstractString)
     decode = Dict{String,String}(
         "&quot;" => "\"",
-        "&amp;" => "&",
+        "amp;" => "",
         "&lt;" => "<",
         "&gt;" => ">",
-        "&#39;" => "'",
+        "&#39;" => "'"
     )
     return replace(st, decode...)
 end
 
-function extract(host)
+function extract(host::String)
     tlds = Set()
     for line in eachline("src/tlds.txt")
         occursin(Regex("\\b$line\\b\\Z"), host) && push!(tlds, line)
@@ -55,10 +58,6 @@ function extract(host)
         domain = rest[1]
     end
     return (subdomain, domain, strip(tld, '.'))
-end
-
-function _subs(subdomain)
-    unique(vcat([subdomain], split(subdomain, r"[\.\-]"), split(subdomain, ".")))
 end
 
 function file_apart(file::String)
@@ -75,6 +74,11 @@ function _parameters(query::AbstractString)
     return unique(res)
 end
 
+function _subs(url::URL)
+    subdomain::String = url.subdomain
+    unique(vcat([subdomain], split(subdomain, r"[\.\-]"), split(subdomain, ".")))
+end
+
 function _parameters_value(query::AbstractString; count::Bool=false)
     res = String[]
     reg = r"\=([\w\-\%\.\:\~\,\"\'\<\>\=\(\)\`\{\}\$\+\/\;]+)?"
@@ -85,6 +89,47 @@ function _parameters_value(query::AbstractString; count::Bool=false)
         return length(res)
     end
     return unique(filter(!isnothing, res))
+end
+
+function param_pairs(url::URL)
+    p = url.parameters
+    v = url.parameters_value
+    diff_pv = abs(url.parameters_count - url.parameters_value_count)
+    if url.parameters_count > url.parameters_value_count
+        for i = 1:diff_pv
+            push!(v, "")
+        end
+    elseif url.parameters_value_count > url.parameters_count
+        for i = 1:diff_pv
+            push!(p, "")
+        end
+    end
+    for (param, value) in Iterators.zip(p, v)
+        println(param, "=", value)
+    end
+end
+
+function Json(url::URL)
+    parts = Dict{String,Any}(
+        "scheme" => url.scheme,
+        "username" => url.username,
+        "password" => url.password,
+        "authenticate" => url.username * ":" * url.password,
+        "host" => url.host,
+        "subdomain" => url.subdomain,
+        "domain" => url.domain,
+        "tld" => url.tld,
+        "port" => url.port,
+        "path" => url.path,
+        "directory" => url.directory,
+        "file" => url.file,
+        "file_name" => url.file_name,
+        "file_ext" => url.file_extension,
+        "query" => url.query,
+        "fragment" => url.fragment
+    )
+
+    println(JSON.json(parts))
 end
 
 function SHOW(url::URL)
@@ -110,13 +155,13 @@ end
 
 
 function URL(url::AbstractString)
-    url::String = replace(url, "www." => "", count=1)
+    url::String = chopprefix(url, "*.")
     parts = match(r"^((?<scheme>\w+):\/\/)?((?<username>[\w\-]+)\:?(?<password>.*?)\@)?(?<host>[\w\-\.]+):?(?<port>\d+)?(?<path>[\/\w\-\.\%\,]+)?(?<query>\?[^\#]*)?(?<fragment>\#.*)?$", url)
 
     scheme::String = !isnothing(parts["scheme"]) ? parts["scheme"] : ""
     username::String = !isnothing(parts["username"]) ? parts["username"] : ""
     password::String = !isnothing(parts["password"]) ? parts["password"] : ""
-    host::String = !isnothing(parts["host"]) ? parts["host"] : ""
+    host::String = !isnothing(parts["host"]) ? replace(parts["host"], "www." => "") : ""
     subdomain::String, domain::String, tld::String = extract(host)
     port::String = !isnothing(parts["port"]) ? parts["port"] : ""
     path::String = !isnothing(parts["path"]) ? parts["path"] : ""
