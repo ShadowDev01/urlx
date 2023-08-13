@@ -67,7 +67,7 @@ end
 
 function _parameters(query::AbstractString)
     res = String[]
-    reg = r"[\?\&\;]([\w\-\~\+]+)"
+    reg = r"[\?\&\;]([\w\-\~\+\%]+)"
     for param in eachmatch(reg, query)
         append!(res, param.captures)
     end
