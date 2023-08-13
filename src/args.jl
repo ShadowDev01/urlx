@@ -24,10 +24,6 @@ function ARGUMENTS()
         help = "key=value pairs from the query string (one per line)"
         action = :store_true
 
-        "--host"
-        help = "the hostname (e.g. sub.example.com)"
-        action = :store_true
-
         "--format"
         help = "Specify a custom format"
         arg_type = String

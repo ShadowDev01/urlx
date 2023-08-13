@@ -28,6 +28,10 @@ function Format(urls::Vector{String}, format::String)
             "%QU" => url._query,
             "%fr" => url.fragment,
             "%FR" => url._fragment,
+            "%pr" => join(url.parameters, " "),
+            "%PR" => join(url.parameters, "\n"),
+            "%va" => join(url.parameters_value, " "),
+            "%VA" => join(url.parameters_value, "\n"),
         ))
     end
 end
@@ -64,7 +68,7 @@ function main()
         urls = unique(readlines(stdin))
     end
 
-    arguments["keypairs"] && keypairs(urls))
+    arguments["keypairs"] && keypairs(urls)
     !isempty(arguments["format"]) && Format(urls, arguments["format"])
 
     if arguments["json"]
