@@ -30,37 +30,49 @@ function Format(urls::Vector{String}, format::String)
             "%FR" => url._fragment,
         ))
     end
+end
 
+function keypairs(urls::Vector{String})
+    Threads.@threads for u in urls
+        url = URL(u)
+        p = url.parameters
+        v = url.parameters_value
+        diff_pv = abs(url.parameters_count - url.parameters_value_count)
+        if url.parameters_count > url.parameters_value_count
+            for i = 1:diff_pv
+                push!(v, "")
+            end
+        elseif url.parameters_value_count > url.parameters_count
+            for i = 1:diff_pv
+                push!(p, "")
+            end
+        end
+        for (param, value) in Iterators.zip(p, v)
+            println(param, "=", value)
+        end
+    end
 end
 
 function main()
-    # arguments = ARGUMENTS()
+    arguments = ARGUMENTS()
 
-    # if !isnothing(arguments["url"])   # in order not to interfere with the switches -u / -U
-    #     urls::Vector{String} = [arguments["url"]]
-    # elseif !isnothing(arguments["urls"])
-    #     urls = readlines(arguments["urls"])
-    # end
-    # format::String = arguments["format"]
+    if !isnothing(arguments["url"])   # in order not to interfere with the switches -u / -U
+        urls::Vector{String} = [arguments["url"]]
+    elseif !isnothing(arguments["urls"])
+        urls = readlines(arguments["urls"])
+    elseif arguments["stdin"]
+        urls = unique(readlines(stdin))
+    end
 
-    format::String = "file = %fi\nfile_name = %fn\nfile_ext = %fe"
-    urls = [
-        "https://miti:1234@login.auth.my-admin.seeu.co.com:443/dir1/dir3/file.js?name=ali&id=63#noone@smsm",
-        "https://login.auth.my-admin.seeu.co.com",
-        "https://miti@login.auth.my-admin.seeu.co.com:443/dir1/dir3/admin.php?name=ali&id=63#noone",
-        "www.login.auth.my-admin.seeu.co.com"
-    ]
+    arguments["keypairs"] && keypairs(urls))
+    !isempty(arguments["format"]) && Format(urls, arguments["format"])
 
-    # Format(urls, format)
-
-    me = URL("https://miti:1234@login.auth.my-admin.seeu.co.com:443/dir1/dir3/file.js?name=ali&amp;&id=63&amp;&age#noone@smsm")
-    # param_pairs(me)
-    # println(_subs(me))
-    # println()
-    # SHOW(me)
-    Json(me)
-
-
+    if arguments["json"]
+        Threads.@threads for u in urls
+            url = URL(u)
+            Json(url, true)
+        end
+    end
 end
 
 main()

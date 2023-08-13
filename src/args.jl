@@ -2,7 +2,7 @@ using ArgParse
 
 function ARGUMENTS()
     settings = ArgParseSettings(
-        prog="BackupX",
+        prog="urlx",
         description="""
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n
         **** extract url items ***
@@ -20,25 +20,22 @@ function ARGUMENTS()
         help = "read url(s) from stdin"
         action = :store_true
 
+        "--keypairs"
+        help = "key=value pairs from the query string (one per line)"
+        action = :store_true
+
+        "--host"
+        help = "the hostname (e.g. sub.example.com)"
+        action = :store_true
+
         "--format"
         help = "Specify a custom format"
         arg_type = String
+        default = ""
 
-        # "-s"
-        # help = "extract scheme of url"
-        # action = :store_true
-
-        # "-S"
-        # help = "gives the URL from the beginning to the scheme"
-        # action = :store_true
-
-        # "-"
-        # help = "gives the URL from the beginning to the scheme"
-        # action = :store_true
-
-        # "-S"
-        # help = "gives the URL from the beginning to the scheme"
-        # action = :store_true
+        "--json"
+        help = "JSON encoded url/format objects"
+        action = :store_true
 
         "-o", "--output"
         help = "save output in file"

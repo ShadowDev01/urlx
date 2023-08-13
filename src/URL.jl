@@ -41,7 +41,7 @@ function Decode(st::AbstractString)
         "&gt;" => ">",
         "&#39;" => "'"
     )
-    return replace(st, decode...)
+    return replace(replace(st, decode...), "&&" => "&")
 end
 
 function extract(host::String)
@@ -91,32 +91,15 @@ function _parameters_value(query::AbstractString; count::Bool=false)
     return unique(filter(!isnothing, res))
 end
 
-function param_pairs(url::URL)
-    p = url.parameters
-    v = url.parameters_value
-    diff_pv = abs(url.parameters_count - url.parameters_value_count)
-    if url.parameters_count > url.parameters_value_count
-        for i = 1:diff_pv
-            push!(v, "")
-        end
-    elseif url.parameters_value_count > url.parameters_count
-        for i = 1:diff_pv
-            push!(p, "")
-        end
-    end
-    for (param, value) in Iterators.zip(p, v)
-        println(param, "=", value)
-    end
-end
-
-function Json(url::URL)
-    parts = Dict{String,Any}(
+function Json(url::URL, indent::Bool=false)
+    parts = OrderedDict{String,Any}(
         "scheme" => url.scheme,
         "username" => url.username,
         "password" => url.password,
         "authenticate" => url.username * ":" * url.password,
         "host" => url.host,
         "subdomain" => url.subdomain,
+        "subdomain_combination" => _subs(url),
         "domain" => url.domain,
         "tld" => url.tld,
         "port" => url.port,
@@ -126,10 +109,13 @@ function Json(url::URL)
         "file_name" => url.file_name,
         "file_ext" => url.file_extension,
         "query" => url.query,
-        "fragment" => url.fragment
+        "fragment" => url.fragment,
+        "parameters" => url.parameters,
+        "parameters_count" => url.parameters_count,
+        "parameters_value" => url.parameters_value,
+        "parameters_value_count" => url.parameters_value_count,
     )
-
-    println(JSON.json(parts))
+    println(indent ? JSON.print(parts, 4) : JSON.print(parts))
 end
 
 function SHOW(url::URL)
