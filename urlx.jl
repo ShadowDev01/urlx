@@ -72,9 +72,14 @@ function main()
     !isempty(arguments["format"]) && Format(urls, arguments["format"])
 
     if arguments["json"]
-        Threads.@threads for u in urls
-            url = URL(u)
-            Json(url, true)
+        for u in urls
+            try
+                url = URL(u)
+                Json(url, true)
+            catch
+                @error "something wrong with this url" u
+                continue
+            end
         end
     end
 end
