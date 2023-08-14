@@ -61,6 +61,10 @@ function ARGUMENTS()
         help = "JSON encoded url/format objects"
         action = :store_true
 
+        "--show"
+        help = "show url objects in texts"
+        action = :store_true
+
         "-o", "--output"
         help = "save output in file"
     end

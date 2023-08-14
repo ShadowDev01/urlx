@@ -2,6 +2,7 @@ using JSON
 using OrderedCollections
 
 struct URL
+    url::String
     scheme::String
     username::String
     password::String
@@ -144,6 +145,7 @@ end
 
 function Json(url::URL)
     parts = OrderedDict{String,Any}(
+        "url" => url.url,
         "scheme" => url.scheme,
         "username" => url.username,
         "password" => url.password,
@@ -171,31 +173,39 @@ end
 
 function SHOW(url::URL)
     items = """
-    * scheme: $(url.scheme)
-    * username: $(url.username)
-    * password: $(url.password)
-    * host: $(url.host)
-    * subdomain: $(url.subdomain)
-    * domain: $(url.domain)
-    * tld: $(url.tld)
-    * port: $(url.port)
-    * path: $(url.path)
-    * directory: $(url.directory)
-    * file: $(url.file)
-    * file_name: $(url.file_name)
+    * url:            $(url.url)
+    * scheme:         $(url.scheme)
+    * username:       $(url.username)
+    * password:       $(url.password)
+    * authenticate:   $(url.username * ':' * url.password)
+    * host:           $(url.host)
+    * subdomain:      $(url.subdomain)
+    * domain:         $(url.domain)
+    * tld:            $(url.tld)
+    * port:           $(url.port)
+    * path:           $(url.path)
+    * directory:      $(url.directory)
+    * file:           $(url.file)
+    * file_name:      $(url.file_name)
     * file_extension: $(url.file_extension)
-    * query: $(url.query)
-    * fragment: $(url.fragment)
+    * query:          $(url.query)
+    * fragment:       $(url.fragment)
+    * subdomain_comb: $(join(_subs(url), " "))
+    * parameters:     $(join(url.parameters, " "))
+    * params count:   $(url.parameters_count)
+    * values:         $(join(url.parameters_value, " "))
+    * values count:   $(url.parameters_value_count)
     """
     println(items)
 end
 
 
-function URL(url::AbstractString)
-    url::String = Decode(url)
+function URL(Url::AbstractString)
+    url::String = Decode(Url)
     url = chopprefix(url, "*.")
     parts = match(r"^((?<scheme>\w+):\/\/)?((?<username>[\w\-]+)\:?(?<password>.*?)\@)?(?<host>[\w\-\.]+):?(?<port>\d+)?(?<path>[\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?(?<query>\?[^\#]*)?(?<fragment>\#.*)?$", url)
 
+    Url::String = url
     scheme::String = !isnothing(parts["scheme"]) ? parts["scheme"] : ""
     username::String = !isnothing(parts["username"]) ? parts["username"] : ""
     password::String = !isnothing(parts["password"]) ? parts["password"] : ""
@@ -223,5 +233,5 @@ function URL(url::AbstractString)
     _query::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+):?(\d+)?([\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?(\?[^\#]*)?", url).match
     _fragment::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+):?(\d+)?([\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?(\?[^\#]*)?(\#.*)?", url).match
 
-    return URL(scheme, username, password, host, subdomain, domain, tld, port, path, directory, file, file_name, file_extension, query, fragment, parameters, parameters_count, parameters_value, parameters_value_count, all, _scheme, _username, _password, _host, _port, _path, _query, _fragment)
+    return URL(Url, scheme, username, password, host, subdomain, domain, tld, port, path, directory, file, file_name, file_extension, query, fragment, parameters, parameters_count, parameters_value, parameters_value_count, all, _scheme, _username, _password, _host, _port, _path, _query, _fragment)
 end

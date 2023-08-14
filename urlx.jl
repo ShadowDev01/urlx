@@ -92,6 +92,19 @@ function main()
             end
         end
     end
+
+    if arguments["show"]
+        for u in urls
+            try
+                url = URL(u)
+                SHOW(url)
+            catch
+                @error "can't process this url 😕 but I did the rest 😉" u
+                continue
+            end
+        end
+    end
+
 end
 
 main()
