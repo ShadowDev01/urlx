@@ -7,6 +7,34 @@ function ARGUMENTS()
         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n
         **** extract url items ***
         \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        """,
+        epilog="""
+            --format dirctives:\n
+            %sc  =>  url scheme\n
+            %SC  =>  from the beginning of url to the scheme\n
+            %un  =>  url username\n
+            %UN  =>  from the beginning of url to the username\n
+            %ho  =>  url host\n
+            %HO  =>  from the beginning of url to the host\n
+            %sd  =>  url subdomain\n
+            %do  =>  url domain\n
+            %tl  =>  url tld\n
+            %po  =>  url port\n
+            %PO  =>  from the beginning of url to the port\n
+            %pa  =>  url path\n
+            %PA  =>  from the beginning of url to the path\n
+            %di  =>  url directory\n
+            %fi  =>  url file\n
+            %fn  =>  url file_name\n
+            %fe  =>  url file_extension\n
+            %qu  =>  url query\n
+            %QU  =>  from the beginning of url to the query\n
+            %fr  =>  url fragment\n
+            %FR  =>  from the beginning of url to the fragment\n
+            %pr  =>  url parameters in space separated\n
+            %PR  =>  url parameters in new line\n
+            %va  =>  url values of parameters in space separated\n
+            %VA  =>  url values of parameters in new line
         """
     )
     @add_arg_table settings begin
