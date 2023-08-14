@@ -91,14 +91,19 @@
 > julia urlx.jl -u [url] [switches]
 ~~~
 
+<br>
+
 * give url(s) in file to urlx
 ~~~
 > julia urlx.jl -U [file] [switches]
 ~~~
 
+<br>
+
 * give url(s) from stdin to urlx
 ~~~
 > cat [file] | julia urlx.jl --stdin [switches]
+
 
 > echo "url" | julia urlx.jl --stdin [switches]
 ~~~
