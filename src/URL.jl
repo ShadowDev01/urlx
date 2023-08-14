@@ -6,6 +6,7 @@ struct URL
     scheme::String
     username::String
     password::String
+    authenticate::String
     host::String
     subdomain::String
     domain::String
@@ -22,11 +23,9 @@ struct URL
     parameters_count::Int32
     parameters_value::Vector{String}
     parameters_value_count::Int32
-    all::Vector{AbstractString}
 
     _scheme::String
-    _username::String
-    _password::String
+    _auth::String
     _host::String
     _port::String
     _path::String
@@ -96,6 +95,10 @@ function Decode(st::AbstractString)
     return replace(replace(st, decode...), "&&" => "&")
 end
 
+function check_str(input::Union{AbstractString,Nothing})
+    !isnothing(input) ? input : ""
+end
+
 function extract(host::String)
     tlds = Set()
     for line in eachline("src/tlds.txt")
@@ -133,7 +136,7 @@ end
 
 function _parameters_value(query::AbstractString; count::Bool=false)
     res = String[]
-    reg = r"\=([\w\-\%\.\:\~\,\"\'\<\>\=\(\)\`\{\}\$\+\/\;]+)?"
+    reg = r"\=([\w\-\%\.\:\~\,\"\'\<\>\=\(\)\`\{\}\$\+\/\;\#]+)?"
     for param in eachmatch(reg, query)
         append!(res, param.captures)
     end
@@ -149,7 +152,7 @@ function Json(url::URL)
         "scheme" => url.scheme,
         "username" => url.username,
         "password" => url.password,
-        "authenticate" => url.username * ":" * url.password,
+        "authenticate" => url.authenticate,
         "host" => url.host,
         "subdomain" => url.subdomain,
         "subdomain_combination" => _subs(url),
@@ -161,7 +164,7 @@ function Json(url::URL)
         "file" => url.file,
         "file_name" => url.file_name,
         "file_ext" => url.file_extension,
-        "query" => url.query,
+        "query" => chopprefix(url.query, "?"),
         "fragment" => url.fragment,
         "parameters" => url.parameters,
         "parameters_count" => url.parameters_count,
@@ -177,7 +180,7 @@ function SHOW(url::URL)
     * scheme:         $(url.scheme)
     * username:       $(url.username)
     * password:       $(url.password)
-    * authenticate:   $(url.username * ':' * url.password)
+    * authenticate:   $(url.authenticate)
     * host:           $(url.host)
     * subdomain:      $(url.subdomain)
     * domain:         $(url.domain)
@@ -203,35 +206,34 @@ end
 function URL(Url::AbstractString)
     url::String = Decode(Url)
     url = chopprefix(url, "*.")
-    parts = match(r"^((?<scheme>\w+):\/\/)?((?<username>[\w\-]+)\:?(?<password>.*?)\@)?(?<host>[\w\-\.]+):?(?<port>\d+)?(?<path>[\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?(?<query>\?[^\#]*)?(?<fragment>\#.*)?$", url)
+    parts = match(r"^((?<scheme>([a-zA-Z]+)):\/\/)?((?<username>([\w\-]+))\:?(?<password>(.*?))\@)?(?<host>([\w\-\.]+)):?(?<port>(\d+))?(?<path>([\/\w\-\.\%\,\"\'\<\>\=\(\)]+))?(?<query>\?(.*?))?(?<fragment>\#([^\#]*?))?$", url)
 
     Url::String = url
-    scheme::String = !isnothing(parts["scheme"]) ? parts["scheme"] : ""
-    username::String = !isnothing(parts["username"]) ? parts["username"] : ""
-    password::String = !isnothing(parts["password"]) ? parts["password"] : ""
-    host::String = !isnothing(parts["host"]) ? replace(parts["host"], "www." => "") : ""
+    scheme::String = check_str(parts["scheme"])
+    username::String = check_str(parts["username"])
+    password::String = check_str(parts["password"])
+    authenticate::String = chopsuffix(check_str(parts[4]), "@")
+    host::String = chopprefix(check_str(parts["host"]), "www.")
     subdomain::String, domain::String, tld::String = extract(host)
-    port::String = !isnothing(parts["port"]) ? parts["port"] : ""
-    path::String = !isnothing(parts["path"]) ? parts["path"] : ""
+    port::String = check_str(parts["port"])
+    path::String = check_str(parts["path"])
     directory::String = dirname(path)
     file::String = basename(path)
     file_name::String, file_extension::String = file_apart(file)
-    query::String = !isnothing(parts["query"]) ? parts["query"] : ""
-    fragment::String = !isnothing(parts["fragment"]) ? parts["fragment"] : ""
+    query::String = check_str(parts["query"])
+    fragment::String = chopprefix(check_str(parts["fragment"]), "#")
     parameters::Vector{String} = _parameters(query)
     parameters_count::Int32 = length(parameters)
     parameters_value::Vector{String} = _parameters_value(query)
     parameters_value_count::Int32 = _parameters_value(query, count=true)
-    all::Vector{AbstractString} = [scheme, username, password, host, subdomain, domain, tld, port, path, directory, file, query, fragment]
 
-    _scheme::String = match(r"(^\w+:\/\/)?", url).match
-    _username::String = match(r"^((\w+:\/\/)?(([\w\-]+)[\:\@]))?", url).match
-    _password::String = match(r"^(((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?)?", url).match
-    _host::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+)", url).match
-    _port::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+):?(\d+)?", url).match
-    _path::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+):?(\d+)?([\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?", url).match
-    _query::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+):?(\d+)?([\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?(\?[^\#]*)?", url).match
-    _fragment::String = match(r"^((\w+):\/\/)?(([\w\-]+)\:?(.*?)\@)?([\w\-\.]+):?(\d+)?([\/\w\-\.\%\,\"\'\<\>\=\(\)]+)?(\?[^\#]*)?(\#.*)?", url).match
+    _scheme::String = check_str(parts[1])
+    _auth::String = _scheme * check_str(parts[4])
+    _host::String = match(r"^((?<scheme>([a-zA-Z]+)):\/\/)?((?<username>([\w\-]+))\:?(?<password>(.*?))\@)?(?<host>([\w\-\.]+)):?", url).match
+    _port::String = _host * port
+    _path::String = _port * path
+    _query::String = _path * query
+    _fragment::String = url
 
-    return URL(Url, scheme, username, password, host, subdomain, domain, tld, port, path, directory, file, file_name, file_extension, query, fragment, parameters, parameters_count, parameters_value, parameters_value_count, all, _scheme, _username, _password, _host, _port, _path, _query, _fragment)
+    return URL(Url, scheme, username, password, authenticate, host, subdomain, domain, tld, port, path, directory, file, file_name, file_extension, query, fragment, parameters, parameters_count, parameters_value, parameters_value_count, _scheme, _auth, _host, _port, _path, _query, _fragment)
 end

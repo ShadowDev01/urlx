@@ -46,7 +46,8 @@
 %sc  =>  url scheme
 %SC  =>  from the beginning of url to the scheme
 %un  =>  url username
-%UN  =>  from the beginning of url to the username
+%pw  =>  url password
+%au  =>  from the beginning of url to the authenticate
 %ho  =>  url host
 %HO  =>  from the beginning of url to the host
 %sd  =>  url subdomain
@@ -85,6 +86,25 @@
 
 <br>
 
+* give single url to urlx
+~~~
+> julia urlx.jl -u [url] [switches]
+~~~
+
+* give url(s) in file to urlx
+~~~
+> julia urlx.jl -U [file] [switches]
+~~~
+
+* give url(s) from stdin to urlx
+~~~
+> cat [file] | julia urlx.jl --stdin [switches]
+
+> echo "url" | julia urlx.jl --stdin [switches]
+~~~
+
+<br>
+
 * using --json option
 ~~~
 > julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --json
@@ -112,8 +132,8 @@
     "file": "file.js",
     "file_name": "file",
     "file_ext": "js",
-    "query": "?id=44&status=null&log",
-    "fragment": "#page~11",
+    "query": "id=44&status=null&log",
+    "fragment": "page~11",
     "parameters": [
         "id",
         "status",
@@ -150,7 +170,7 @@
 * file_name:      file
 * file_extension: js
 * query:          ?id=44&status=null&log
-* fragment:       #page~11
+* fragment:       page~11
 * subdomain_comb: auth.admin-user auth admin user admin-user
 * parameters:     id status log
 * params count:   3

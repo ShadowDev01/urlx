@@ -13,7 +13,8 @@ function ARGUMENTS()
             %sc  =>  url scheme\n
             %SC  =>  from the beginning of url to the scheme\n
             %un  =>  url username\n
-            %UN  =>  from the beginning of url to the username\n
+            %pw  =>  url password\n
+            %au  =>  from the beginning of url to the authenticate\n
             %ho  =>  url host\n
             %HO  =>  from the beginning of url to the host\n
             %sd  =>  url subdomain\n
