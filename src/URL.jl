@@ -136,14 +136,14 @@ end
 
 function _parameters_value(query::AbstractString; count::Bool=false)
     res = String[]
-    reg = r"\=([\w\-\%\.\:\~\,\"\'\<\>\=\(\)\`\{\}\$\+\/\;\#]+)?"
+    reg = r"\=([\w\-\%\.\:\~\,\"\'\<\>\=\(\)\`\{\}\$\+\/\;\#]*)?"
     for param in eachmatch(reg, query)
         append!(res, param.captures)
     end
     if count
         return length(res)
     end
-    return unique(filter(!isnothing, res))
+    return unique(filter(!isempty, res))
 end
 
 function Json(url::URL)
