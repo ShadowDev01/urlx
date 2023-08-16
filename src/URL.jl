@@ -206,7 +206,7 @@ end
 function URL(Url::AbstractString)
     url::String = Decode(Url)
     url = chopprefix(url, "*.")
-    parts = match(r"^((?<scheme>([a-zA-Z]+)):\/\/)?((?<username>([\w\-]+))\:?(?<password>(.*?))\@)?(?<host>([\w\-\.]+)):?(?<port>(\d+))?(?<path>([\/\w\-\.\%\,\"\'\<\>\=\(\)]+))?(?<query>\?(.*?))?(?<fragment>\#([^\#]*?))?$", url)
+    parts = match(r"^((?<scheme>([a-zA-Z]+)):\/\/)?((?<username>([\w\-]+))\:?(?<password>(.*?))\@)?(?<host>([\w\-\.]+)):?(?<port>(\d+))?(?<path>([\/\w\-\.\%\,\"\'\<\>\=\(\)]+))?(?<query>\?(.*?))?(?<fragment>(?<!\=)\#([^\#]*?))?$", url)
 
     Url::String = url
     scheme::String = check_str(parts["scheme"])
@@ -221,7 +221,7 @@ function URL(Url::AbstractString)
     file::String = basename(path)
     file_name::String, file_extension::String = file_apart(file)
     query::String = check_str(parts["query"])
-    fragment::String = chopprefix(check_str(parts["fragment"]), "#")
+    fragment::String = check_str(parts[18])
     parameters::Vector{String} = _parameters(query)
     parameters_count::Int32 = length(parameters)
     parameters_value::Vector{String} = _parameters_value(query)
