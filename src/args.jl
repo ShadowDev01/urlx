@@ -1,6 +1,10 @@
 using ArgParse
 
 function ARGUMENTS()
+    cyan::String = "\u001b[36m"
+    yellow::String = "\u001b[33m"
+    nc::String = "\033[0m"
+
     settings = ArgParseSettings(
         prog="urlx",
         description="""
@@ -9,33 +13,34 @@ function ARGUMENTS()
         \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         """,
         epilog="""
-            --format dirctives:\n
-            %sc  =>  url scheme\n
-            %SC  =>  from the beginning of url to the scheme\n
-            %un  =>  url username\n
-            %pw  =>  url password\n
-            %au  =>  from the beginning of url to the authenticate\n
-            %ho  =>  url host\n
-            %HO  =>  from the beginning of url to the host\n
-            %sd  =>  url subdomain\n
-            %do  =>  url domain\n
-            %tl  =>  url tld\n
-            %po  =>  url port\n
-            %PO  =>  from the beginning of url to the port\n
-            %pa  =>  url path\n
-            %PA  =>  from the beginning of url to the path\n
-            %di  =>  url directory\n
-            %fi  =>  url file\n
-            %fn  =>  url file_name\n
-            %fe  =>  url file_extension\n
-            %qu  =>  url query\n
-            %QU  =>  from the beginning of url to the query\n
-            %fr  =>  url fragment\n
-            %FR  =>  from the beginning of url to the fragment\n
-            %pr  =>  url parameters in space separated\n
-            %PR  =>  url parameters in new line\n
-            %va  =>  url values of parameters in space separated\n
-            %VA  =>  url values of parameters in new line
+            $(yellow)--format dirctives:$(nc)\n
+
+            $(cyan)%sc$(nc)  =>  url scheme\n
+            $(cyan)%SC$(nc)  =>  from the beginning of url to the scheme\n
+            $(cyan)%un$(nc)  =>  url username\n
+            $(cyan)%pw$(nc)  =>  url password\n
+            $(cyan)%au$(nc)  =>  from the beginning of url to the authenticate\n
+            $(cyan)%ho$(nc)  =>  url host\n
+            $(cyan)%HO$(nc)  =>  from the beginning of url to the host\n
+            $(cyan)%sd$(nc)  =>  url subdomain\n
+            $(cyan)%do$(nc)  =>  url domain\n
+            $(cyan)%tl$(nc)  =>  url tld\n
+            $(cyan)%po$(nc)  =>  url port\n
+            $(cyan)%PO$(nc)  =>  from the beginning of url to the port\n
+            $(cyan)%pa$(nc)  =>  url path\n
+            $(cyan)%PA$(nc)  =>  from the beginning of url to the path\n
+            $(cyan)%di$(nc)  =>  url directory\n
+            $(cyan)%fi$(nc)  =>  url file\n
+            $(cyan)%fn$(nc)  =>  url file_name\n
+            $(cyan)%fe$(nc)  =>  url file_extension\n
+            $(cyan)%qu$(nc)  =>  url query\n
+            $(cyan)%QU$(nc)  =>  from the beginning of url to the query\n
+            $(cyan)%fr$(nc)  =>  url fragment\n
+            $(cyan)%FR$(nc)  =>  from the beginning of url to the fragment\n
+            $(cyan)%pr$(nc)  =>  url parameters in space separated\n
+            $(cyan)%PR$(nc)  =>  url parameters in new line\n
+            $(cyan)%va$(nc)  =>  url values of parameters in space separated\n
+            $(cyan)%VA$(nc)  =>  url values of parameters in new line
         """
     )
     @add_arg_table settings begin
