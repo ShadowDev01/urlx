@@ -38,7 +38,7 @@
 *  --format FORMAT       Specify a custom format (default: "")
 *  --json                JSON encoded url/format objects
 *  --show                show url objects in texts
-* --decode               simple url & html decode
+*  --decode               simple url & html decode
 *  -o, --output          save output in file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
