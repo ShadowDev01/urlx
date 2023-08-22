@@ -5,7 +5,7 @@
 
 # Install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                            *** julia ***
+                                              *** julia ***
 
 # install julia: https://julialang.org/downloads/   or   snap install julia --classic
 # then run this commands in terminal:
@@ -38,6 +38,7 @@
 *  --format FORMAT       Specify a custom format (default: "")
 *  --json                JSON encoded url/format objects
 *  --show                show url objects in texts
+* --decode               simple url & html decode
 *  -o, --output          save output in file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

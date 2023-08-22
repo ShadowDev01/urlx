@@ -106,6 +106,12 @@ function main()
         end
     end
 
+    if arguments["decode"]
+        for url in urls
+            println(Decode(url))
+        end
+    end
+
 end
 
 main()

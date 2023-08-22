@@ -71,6 +71,10 @@ function ARGUMENTS()
         help = "show url objects in texts"
         action = :store_true
 
+        "--decode"
+        help = "simple url & html decode"
+        action = :store_true
+
         "-o", "--output"
         help = "save output in file"
     end
