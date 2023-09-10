@@ -1,12 +1,13 @@
 include("src/args.jl")
 include("src/URL.jl")
 
+format_data = AbstractString[]
 
 function Format(urls::Vector{String}, format::String)
     Threads.@threads for u in urls
         try
             url = URL(u)
-            println(replace(
+            push!(format_data, replace(
                 format,
                 "%sc" => url.scheme,
                 "%SC" => url._scheme,
@@ -68,6 +69,16 @@ function keypairs(urls::Vector{String})
     end
 end
 
+function COUNT(number::Bool)
+    data = Dict{String,Int32}()
+    for i in format_data
+        haskey(data, i) ? (data[i] += 1) : (data[i] = 1)
+    end
+    for (k, v) in sort(data, byvalue=true, rev=true)
+        println(number ? "$k: $v" : k)
+    end
+end
+
 function main()
     arguments = ARGUMENTS()
 
@@ -79,8 +90,20 @@ function main()
         urls = unique(readlines(stdin))
     end
 
+    urls = filter(!isempty, urls)
+
     arguments["keypairs"] && keypairs(urls)
-    !isempty(arguments["format"]) && Format(urls, arguments["format"])
+
+    if !isempty(arguments["format"])
+        Format(urls, arguments["format"])
+        if arguments["cn"]
+            COUNT(true)
+        elseif arguments["c"]
+            COUNT(false)
+        else
+            println(join(format_data, "\n"))
+        end
+    end
 
     if arguments["json"]
         for u in urls
