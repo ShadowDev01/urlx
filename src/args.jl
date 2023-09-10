@@ -75,7 +75,7 @@ function ARGUMENTS()
         help = "simple url & html decode"
         action = :store_true
 
-        "--c"
+        "-c"
         help = "count and sort descending"
         action = :store_true
 
