@@ -39,7 +39,7 @@
 *  --json                JSON encoded url/format objects
 *  --show                show url objects in texts
 *  --decode              simple url & html decode
-*  --c                   count and sort descending
+*  -c                    count and sort descending
 *  --cn                  count and sort descending with numbers
 *  -o, --output          save output in file
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -212,7 +212,7 @@ https
 https company 443
 ~~~
 
-* using --format [string] --c
+* using --format [string] -c
 ~~~
 > julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc" -c
 
