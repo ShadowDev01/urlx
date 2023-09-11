@@ -34,6 +34,8 @@
 *  -u, --url             single url
 *  -U, --urls            list of urls in file
 *  --stdin               read url(s) from stdin
+*  --keys                print all keys in query in unique
+*  --values              print all values in query in unique
 *  --keypairs            key=value pairs from the query string (one per line)
 *  --format FORMAT       Specify a custom format (default: "")
 *  --json                JSON encoded url/format objects
@@ -186,15 +188,101 @@
 * values count:   2
 ~~~
 
+
 <br>
 
-* using --keypairs option 
+* using --keys 
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+
+id
+status
+log
+~~~
+
+<br>
+
+* using --keys -c 
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+
+id
+status
+log
+~~~
+
+<br>
+
+* using --keys --cn 
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+
+id: 1
+status: 1
+log: 1
+~~~
+
+<br>
+
+* using --values
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+
+44
+null
+~~~
+
+<br>
+
+* using --values -c
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+
+44
+null
+~~~
+
+<br>
+
+* using --values --cn
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+
+44: 1
+null: 1
+~~~
+
+<br>
+
+* using --keypairs 
 ~~~
 > julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs
 
 id=44
 status=null
 log=
+~~~
+
+<br>
+
+* using --keypairs -c
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs
+
+id=44
+status=null
+log=
+~~~
+
+<br>
+
+* using --keypairs --cn
+~~~
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs
+
+id=44: 1
+status=null: 1
+log=: 1
 ~~~
 
 <br>

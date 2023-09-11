@@ -1,7 +1,10 @@
 include("src/args.jl")
 include("src/URL.jl")
 
-format_data = AbstractString[]
+params = String[]
+vals = String[]
+kp = String[]
+format_data = String[]
 
 function Format(urls::Vector{String}, format::String)
     Threads.@threads for u in urls
@@ -43,6 +46,30 @@ function Format(urls::Vector{String}, format::String)
     end
 end
 
+function KEYS(urls::Vector{String})
+    Threads.@threads for u in urls
+        try
+            url = URL(u)
+            append!(params, url.parameters)
+        catch
+            @error "can't process this url 😕 but I did the rest 😉" u
+            continue
+        end
+    end
+end
+
+function VALUES(urls::Vector{String})
+    Threads.@threads for u in urls
+        try
+            url = URL(u)
+            append!(vals, url.parameters_value)
+        catch
+            @error "can't process this url 😕 but I did the rest 😉" u
+            continue
+        end
+    end
+end
+
 function keypairs(urls::Vector{String})
     Threads.@threads for u in urls
         try
@@ -60,7 +87,7 @@ function keypairs(urls::Vector{String})
                 end
             end
             for (param, value) in Iterators.zip(p, v)
-                println(param, "=", value)
+                push!(kp, "$param=$value")
             end
         catch
             @error "can't process this url 😕 but I did the rest 😉" u
@@ -69,9 +96,9 @@ function keypairs(urls::Vector{String})
     end
 end
 
-function COUNT(number::Bool)
+function COUNT(list::Vector{String}, number::Bool)
     data = Dict{String,Int32}()
-    for i in format_data
+    for i in list
         haskey(data, i) ? (data[i] += 1) : (data[i] = 1)
     end
     for (k, v) in sort(data, byvalue=true, rev=true)
@@ -81,6 +108,9 @@ end
 
 function main()
     arguments = ARGUMENTS()
+
+    c::Bool = arguments["c"]
+    cn::Bool = arguments["cn"]
 
     if !isnothing(arguments["url"])   # in order not to interfere with the switches -u / -U
         urls::Vector{String} = [arguments["url"]]
@@ -92,14 +122,45 @@ function main()
 
     urls = filter(!isempty, urls)
 
-    arguments["keypairs"] && keypairs(urls)
+    if arguments["keys"]
+        KEYS(urls)
+        if cn
+            COUNT(params, true)
+        elseif c
+            COUNT(params, false)
+        else
+            println(join(unique(params), "\n"))
+        end
+    end
+
+    if arguments["values"]
+        VALUES(urls)
+        if cn
+            COUNT(vals, true)
+        elseif c
+            COUNT(vals, false)
+        else
+            println(join(unique(vals), "\n"))
+        end
+    end
+
+    if arguments["keypairs"]
+        keypairs(urls)
+        if cn
+            COUNT(kp, true)
+        elseif c
+            COUNT(kp, false)
+        else
+            println(join(kp, "\n"))
+        end
+    end
 
     if !isempty(arguments["format"])
         Format(urls, arguments["format"])
-        if arguments["cn"]
-            COUNT(true)
-        elseif arguments["c"]
-            COUNT(false)
+        if cn
+            COUNT(format_data, true)
+        elseif c
+            COUNT(format_data, false)
         else
             println(join(format_data, "\n"))
         end

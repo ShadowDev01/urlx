@@ -54,6 +54,14 @@ function ARGUMENTS()
         help = "read url(s) from stdin"
         action = :store_true
 
+        "--keys"
+        help = "print all keys in query in unique"
+        action = :store_true
+
+        "--values"
+        help = "print all values in query in unique"
+        action = :store_true
+
         "--keypairs"
         help = "key=value pairs from the query string (one per line)"
         action = :store_true
