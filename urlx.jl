@@ -5,6 +5,7 @@ params = String[]
 vals = String[]
 kp = String[]
 format_data = String[]
+json_data = Vector{OrderedDict{String,Any}}()
 
 function Format(urls::Vector{String}, format::String)
     Threads.@threads for u in urls
@@ -176,6 +177,7 @@ function main()
                 continue
             end
         end
+        JSON.print(json_data, 4)
     end
 
     if arguments["show"]

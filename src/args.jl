@@ -8,9 +8,9 @@ function ARGUMENTS()
     settings = ArgParseSettings(
         prog="urlx",
         description="""
-        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n
         **** extract url items ***
-        \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+        \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         """,
         epilog="""
             $(yellow)--format dirctives:$(nc)\n

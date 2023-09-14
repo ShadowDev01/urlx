@@ -107,7 +107,7 @@ function _parameters_value(query::AbstractString; count::Bool=false)
 end
 
 function Json(url::URL)
-    parts = OrderedDict{String,Any}(
+    push!(json_data, OrderedDict{String,Any}(
         "url" => url.url,
         "scheme" => url.scheme,
         "username" => url.username,
@@ -130,8 +130,7 @@ function Json(url::URL)
         "parameters_count" => url.parameters_count,
         "parameters_value" => url.parameters_value,
         "parameters_value_count" => url.parameters_value_count,
-    )
-    JSON.print(parts, 4)
+    ))
 end
 
 function SHOW(url::URL)
