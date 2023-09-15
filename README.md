@@ -34,9 +34,25 @@
 *  -u, --url             single url
 *  -U, --urls            list of urls in file
 *  --stdin               read url(s) from stdin
+*  --scheme              print url scheme
+*  --username            print url username
+*  --password            print url password
+*  --authenticate        print url authenticate
+*  --host                print url host
+*  --domain              print url domain
+*  --subdomain           print url subdomain
+*  --tld                 print url tld
+*  --port                print url port
+*  --path                print url path
+*  --directory           print url directory
+*  --file                print url file
+*  --file_name           print url file_name
+*  --file_extension      print url file_extension
+*  --query               print url query
 *  --keys                print all keys in query in unique
 *  --values              print all values in query in unique
 *  --keypairs            key=value pairs from the query string (one per line)
+*  --fragment            print url fragment
 *  --format FORMAT       Specify a custom format (default: "")
 *  --json                JSON encoded url/format objects
 *  --show                show url objects in texts

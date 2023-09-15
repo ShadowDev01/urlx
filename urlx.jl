@@ -1,6 +1,7 @@
 include("src/args.jl")
 include("src/URL.jl")
 
+DATA = String[]
 params = String[]
 vals = String[]
 kp = String[]
@@ -40,6 +41,18 @@ function Format(urls::Vector{String}, format::String)
                 "%va" => join(url.parameters_value, " "),
                 "%VA" => join(url.parameters_value, "\n"),
             ))
+        catch
+            @error "can't process this url 😕 but I did the rest 😉" u
+            continue
+        end
+    end
+end
+
+function PARTS(urls::Vector{String}, switch::String)
+    Threads.@threads for u in urls
+        try
+            global urle = URL(u)
+            eval(Meta.parse("!isempty(urle.$switch) && push!(DATA, urle.$switch)"))
         catch
             @error "can't process this url 😕 but I did the rest 😉" u
             continue
@@ -123,6 +136,19 @@ function main()
 
     urls = filter(!isempty, urls)
 
+    switches = filter(item -> arguments[item], ["scheme", "username", "password", "authenticate", "host", "domain", "subdomain", "tld", "port", "path", "directory", "file", "file_name", "file_extension", "query", "fragment"])
+
+    if !isempty(switches)
+        PARTS(urls, switches[1])
+        if cn
+            COUNT(DATA, true)
+        elseif c
+            COUNT(DATA, false)
+        else
+            println(join(DATA, "\n"))
+        end
+    end
+
     if arguments["keys"]
         KEYS(urls)
         if cn
@@ -152,7 +178,7 @@ function main()
         elseif c
             COUNT(kp, false)
         else
-            println(join(kp, "\n"))
+            println(join(unique(kp), "\n"))
         end
     end
 

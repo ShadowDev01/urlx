@@ -54,6 +54,66 @@ function ARGUMENTS()
         help = "read url(s) from stdin"
         action = :store_true
 
+        "--scheme"
+        help = "print url scheme"
+        action = :store_true
+
+        "--username"
+        help = "print url username"
+        action = :store_true
+
+        "--password"
+        help = "print url password"
+        action = :store_true
+
+        "--authenticate"
+        help = "print url auth"
+        action = :store_true
+
+        "--host"
+        help = "print url host"
+        action = :store_true
+
+        "--domain"
+        help = "print url domain"
+        action = :store_true
+
+        "--subdomain"
+        help = "print url subdomain"
+        action = :store_true
+
+        "--tld"
+        help = "print url tld"
+        action = :store_true
+
+        "--port"
+        help = "print url port"
+        action = :store_true
+
+        "--path"
+        help = "print url path"
+        action = :store_true
+
+        "--directory"
+        help = "print url directory"
+        action = :store_true
+
+        "--file"
+        help = "print url file"
+        action = :store_true
+
+        "--file_name"
+        help = "print url file name"
+        action = :store_true
+
+        "--file_extension"
+        help = "print url ext"
+        action = :store_true
+
+        "--query"
+        help = "print url query"
+        action = :store_true
+
         "--keys"
         help = "print all keys in query in unique"
         action = :store_true
@@ -64,6 +124,10 @@ function ARGUMENTS()
 
         "--keypairs"
         help = "key=value pairs from the query string (one per line)"
+        action = :store_true
+
+        "--fragment"
+        help = "print url fragment"
         action = :store_true
 
         "--format"
@@ -90,7 +154,7 @@ function ARGUMENTS()
         "--cn"
         help = "count and sort descending with numbers"
         action = :store_true
-        
+
         "-o", "--output"
         help = "save output in file"
     end
