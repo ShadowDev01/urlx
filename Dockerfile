@@ -3,4 +3,5 @@ RUN julia -e 'using Pkg; Pkg.add("ArgParse"); Pkg.add("JSON"); Pkg.add("OrderedC
 RUN mkdir /urlx
 WORKDIR /urlx/
 COPY . /urlx/
-CMD [ "julia" ]
+ENTRYPOINT [ "julia", "/urlx/urlx.jl" ]
+CMD [ "-h" ]

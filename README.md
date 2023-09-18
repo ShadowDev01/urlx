@@ -21,9 +21,7 @@
 * 1. git clone https://github.com/mrmeeseeks01/urlx.git
 * 2. cd urlx/
 * 3. docker build -t urlx .
-* 4. docker run -it urlx
-* 5. press ; to enabled shell mode
-* 6. julia urlx.jl -h
+* 4. docker run urlx
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 # Switches
