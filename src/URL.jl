@@ -180,7 +180,7 @@ end
 
 # JSON output of URL sections
 function Json(url::URL)
-    push!(json_data, OrderedDict{String,Any}(
+    push!(JSON_DATA, OrderedDict{String,Any}(
         "rawurl" => url.rawurl,
         "url" => url.url,
         "scheme" => url.scheme,

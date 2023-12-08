@@ -1,13 +1,14 @@
 include("src/args.jl")
 include("src/URL.jl")
 
-DATA = String[]
-params = String[]
-vals = String[]
-kp = String[]
-format_data = String[]
-json_data = Vector{OrderedDict{String,Any}}()
+DATA = String[]                                 # used for other other parts of url
+PARAMS = String[]                               # used for --keys to print query parameters
+VALS = String[]                                 # used for --values to print query parameters values
+KEYPAIRR = String[]                             # used for --keypairs to print query keypairs
+FORMAT_DATA = String[]                          # used for --format
+JSON_DATA = Vector{OrderedDict{String,Any}}()   # used for --json
 
+# called when --format passed
 function Format(urls::Vector{String}, format::String)
     Threads.@threads for u in urls
         try
@@ -48,6 +49,8 @@ function Format(urls::Vector{String}, format::String)
     end
 end
 
+
+
 function PARTS(urls::Vector{String}, switch::String)
     Threads.@threads for u in urls
         try
@@ -60,11 +63,12 @@ function PARTS(urls::Vector{String}, switch::String)
     end
 end
 
+# called when --keys passed
 function KEYS(urls::Vector{String})
     Threads.@threads for u in urls
         try
             url = URL(u)
-            append!(params, url.parameters)
+            append!(PARAMS, url.parameters)
         catch
             @error "can't process this url 😕 but I did the rest 😉" u
             continue
@@ -72,11 +76,12 @@ function KEYS(urls::Vector{String})
     end
 end
 
+# called when --values passed
 function VALUES(urls::Vector{String})
     Threads.@threads for u in urls
         try
             url = URL(u)
-            append!(vals, url.parameters_value)
+            append!(VALS, url.parameters_value)
         catch
             @error "can't process this url 😕 but I did the rest 😉" u
             continue
@@ -84,24 +89,26 @@ function VALUES(urls::Vector{String})
     end
 end
 
+# called when --keypairs passed
 function keypairs(urls::Vector{String})
     Threads.@threads for u in urls
         try
+            # extract wanted url sections
             url = URL(u)
-            p = url.parameters
-            v = url.parameters_value
-            diff_pv = abs(url.parameters_count - url.parameters_value_count)
+            params = url.parameters
+            values = url.parameters_value
+            diff = abs(url.parameters_count - url.parameters_value_count)
+
+            # parameters with no value will pair with ""
             if url.parameters_count > url.parameters_value_count
-                for i = 1:diff_pv
-                    push!(v, "")
-                end
-            elseif url.parameters_value_count > url.parameters_count
-                for i = 1:diff_pv
-                    push!(p, "")
+                for i = 1:diff
+                    push!(values, "")
                 end
             end
-            for (param, value) in Iterators.zip(p, v)
-                push!(kp, "$param=$value")
+
+            # make pair parameters with their values with =
+            for (param, value) in Iterators.zip(params, values)
+                push!(KEYPAIRR, "$param=$value")
             end
         catch
             @error "can't process this url 😕 but I did the rest 😉" u
@@ -110,23 +117,29 @@ function keypairs(urls::Vector{String})
     end
 end
 
+# Count & sort url items
 function COUNT(list::Vector{String}, number::Bool)
     data = Dict{String,Int32}()
-    for i in list
-        haskey(data, i) ? (data[i] += 1) : (data[i] = 1)
+
+    # count url items
+    for item in list
+        haskey(data, item) ? (data[item] += 1) : (data[item] = 1)
     end
-    for (k, v) in sort(data, byvalue=true, rev=true)
-        println(number ? "$k: $v" : k)
+
+    # sort descending url items 
+    for (key, value) in sort(data, byvalue=true, rev=true)
+        println(number ? "$key: $value" : key)               # if number was true show number of items
     end
 end
 
+
 function main()
-    arguments = ARGUMENTS()
+    arguments = ARGUMENTS()             # passed user cli arguments
 
-    c::Bool = arguments["c"]
-    cn::Bool = arguments["cn"]
+    count::Bool = arguments["c"]
+    countNumber::Bool = arguments["cn"]
 
-    if !isnothing(arguments["url"])   # in order not to interfere with the switches -u / -U
+    if !isnothing(arguments["url"])     # in order not to interfere with the switches -u / -U
         urls::Vector{String} = [arguments["url"]]
     elseif !isnothing(arguments["urls"])
         urls = readlines(arguments["urls"])
@@ -134,65 +147,70 @@ function main()
         urls = unique(readlines(stdin))
     end
 
-    urls = filter(!isempty, urls)
+    urls = filter(!isempty, urls)       # remove empty lines
 
     switches = filter(item -> arguments[item], ["scheme", "username", "password", "authenticate", "host", "domain", "subdomain", "tld", "port", "path", "directory", "file", "file_name", "file_extension", "query", "fragment"])
 
     if !isempty(switches)
         PARTS(urls, switches[1])
-        if cn
+        if countNumber
             COUNT(DATA, true)
-        elseif c
+        elseif count
             COUNT(DATA, false)
         else
             println(join(DATA, "\n"))
         end
     end
 
+    # manage --keys
     if arguments["keys"]
         KEYS(urls)
-        if cn
-            COUNT(params, true)
-        elseif c
-            COUNT(params, false)
+        if countNumber
+            COUNT(PARAMS, true)
+        elseif count
+            COUNT(PARAMS, false)
         else
-            println(join(unique(params), "\n"))
+            println(join(unique(PARAMS), "\n"))
         end
     end
 
+    # manage --values
     if arguments["values"]
         VALUES(urls)
-        if cn
-            COUNT(vals, true)
-        elseif c
-            COUNT(vals, false)
+        if countNumber
+            COUNT(VALS, true)
+        elseif count
+            COUNT(VALS, false)
         else
-            println(join(unique(vals), "\n"))
+            println(join(unique(VALS), "\n"))
         end
     end
 
+    # manage --keypairs
     if arguments["keypairs"]
         keypairs(urls)
-        if cn
-            COUNT(kp, true)
-        elseif c
-            COUNT(kp, false)
+        if countNumber
+            COUNT(KEYPAIRR, true)
+        elseif count
+            COUNT(KEYPAIRR, false)
         else
-            println(join(unique(kp), "\n"))
+            println(join(unique(KEYPAIRR), "\n"))
         end
     end
 
+    # manage --format
     if !isempty(arguments["format"])
         Format(urls, arguments["format"])
-        if cn
-            COUNT(format_data, true)
-        elseif c
-            COUNT(format_data, false)
+        if countNumber
+            COUNT(FORMAT_DATA, true)
+        elseif count
+            COUNT(FORMAT_DATA, false)
         else
-            println(join(format_data, "\n"))
+            println(join(FORMAT_DATA, "\n"))
         end
     end
 
+    # manage --json
     if arguments["json"]
         for u in urls
             try
@@ -203,9 +221,10 @@ function main()
                 continue
             end
         end
-        JSON.print(json_data, 4)
+        JSON.print(JSON_DATA, 4)
     end
 
+    # manage --show
     if arguments["show"]
         for u in urls
             try
@@ -218,12 +237,13 @@ function main()
         end
     end
 
+    # manage --decode
     if arguments["decode"]
         for url in urls
-            println(Decode(url))
+            println(url |> URL_Decode |> HTML_Decode)
         end
     end
-    
+
 end
 
 main()
