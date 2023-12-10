@@ -133,43 +133,46 @@
 ~~~
 > julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --json
 
-{
-    "url": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
-    "scheme": "https",
-    "username": "admin",
-    "password": "1234",
-    "authenticate": "admin:1234",
-    "host": "auth.admin-user.company.co.com",
-    "subdomain": "auth.admin-user",
-    "subdomain_combination": [
-        "auth.admin-user",
-        "auth",
-        "admin",
-        "user",
-        "admin-user"
-    ],
-    "domain": "company",
-    "tld": "co.com",
-    "port": "443",
-    "path": "/dir1/dir2/file.js",
-    "directory": "/dir1/dir2",
-    "file": "file.js",
-    "file_name": "file",
-    "file_ext": "js",
-    "query": "id=44&status=null&log",
-    "fragment": "page~11",
-    "parameters": [
-        "id",
-        "status",
-        "log"
-    ],
-    "parameters_count": 3,
-    "parameters_value": [
-        "44",
-        "null"
-    ],
-    "parameters_value_count": 2
-}
+[
+    {
+        "rawurl": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
+        "url": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
+        "scheme": "https",
+        "username": "admin",
+        "password": "1234",
+        "authenticate": "admin:1234",
+        "host": "auth.admin-user.company.co.com",
+        "subdomain": "auth.admin-user",
+        "subdomain_combination": [
+            "auth.admin-user",
+            "auth",
+            "admin",
+            "user",
+            "admin-user"
+        ],
+        "domain": "company",
+        "tld": "co.com",
+        "port": "443",
+        "path": "/dir1/dir2/file.js",
+        "directory": "/dir1/dir2",
+        "file": "file.js",
+        "file_name": "file",
+        "file_ext": "js",
+        "query": "id=44&status=null&log",
+        "fragment": "page~11",
+        "parameters": [
+            "id",
+            "status",
+            "log"
+        ],
+        "parameters_count": 3,
+        "parameters_value": [
+            "44",
+            "null"
+        ],
+        "parameters_value_count": 2
+    }
+]
 ~~~
 
 <br>
@@ -178,11 +181,11 @@
 ~~~
 > julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --show
 
-* url:            https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11
+* rawurl:         https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11
 * scheme:         https
 * username:       admin
 * password:       1234
-* authenticate:   admin:1234
+* auth:           admin:1234
 * host:           auth.admin-user.company.co.com
 * subdomain:      auth.admin-user
 * domain:         company
@@ -192,14 +195,14 @@
 * directory:      /dir1/dir2
 * file:           file.js
 * file_name:      file
-* file_extension: js
+* file_ext:       js
 * query:          ?id=44&status=null&log
 * fragment:       page~11
 * subdomain_comb: auth.admin-user auth admin user admin-user
 * parameters:     id status log
 * params count:   3
 * values:         44 null
-* values count:   2
+* value count:    2
 ~~~
 
 

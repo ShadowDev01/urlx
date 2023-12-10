@@ -50,7 +50,6 @@ function Format(urls::Vector{String}, format::String)
 end
 
 
-
 function PARTS(urls::Vector{String}, switch::String)
     Threads.@threads for u in urls
         try
@@ -142,7 +141,12 @@ function main()
     if !isnothing(arguments["url"])     # in order not to interfere with the switches -u / -U
         urls::Vector{String} = [arguments["url"]]
     elseif !isnothing(arguments["urls"])
-        urls = readlines(arguments["urls"])
+        try
+            urls = readlines(arguments["urls"])
+        catch err
+            @error "there is no file: $(arguments["urls"])"
+            exit(0)
+        end
     elseif arguments["stdin"]
         urls = unique(readlines(stdin))
     end

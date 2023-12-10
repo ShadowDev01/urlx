@@ -60,10 +60,12 @@ end
 
 function HTML_Decode(url::AbstractString)
     # HTML HEX, DEC Decode
-    for encoded in eachmatch(r"&#(?<number>[a-zA-Z0-9]+);", url)   # As long as the &#(hex|dec) exists, it will continue to url docode
-        n = encoded["number"]
-        num = parse(Int, startswith(n, "x") ? "0$n" : n)
-        url = replace(url, encoded.match => Char(num))
+    while occursin(r"&#(?<number>[a-zA-Z0-9]+);", url)                  # As long as the &#(hex|dec) exists, it will continue to url docode
+        for encoded in eachmatch(r"&#(?<number>[a-zA-Z0-9]+);", url)
+            n = encoded["number"]
+            num = parse(Int, startswith(n, "x") ? "0$n" : n)
+            url = replace(url, encoded.match => Char(num))
+        end
     end
 
     # HTML Symbol Decode
@@ -82,8 +84,9 @@ end
 # extract subdomain, domain & tld from host
 function split_domain(host::String)
     # extract tld
+    file = isfile("tlds.txt") ? "tlds.txt" : "src/tlds.txt"
     tlds = Set{AbstractString}()
-    for line in eachline("src/tlds.txt")
+    for line in eachline(file)
         occursin(Regex("\\b$line\\b\\Z"), host) && push!(tlds, line)
     end
     tld = argmax(length, tlds)[2:end]
