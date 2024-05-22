@@ -165,7 +165,7 @@ function main()
 		elseif count
 			COUNT(DATA, false)
 		else
-			println(join(DATA, "\n"))
+			print(join(DATA, "\n"))
 		end
 	end
 
@@ -177,7 +177,7 @@ function main()
 		elseif count
 			COUNT(PARAMS, false)
 		else
-			println(join(unique(PARAMS), "\n"))
+			print(join(unique(PARAMS), "\n"))
 		end
 	end
 
@@ -189,7 +189,7 @@ function main()
 		elseif count
 			COUNT(VALS, false)
 		else
-			println(join(unique(VALS), "\n"))
+			print(join(unique(VALS), "\n"))
 		end
 	end
 
@@ -201,7 +201,7 @@ function main()
 		elseif count
 			COUNT(KEYPAIRR, false)
 		else
-			println(join(unique(KEYPAIRR), "\n"))
+			print(join(unique(KEYPAIRR), "\n"))
 		end
 	end
 
@@ -213,7 +213,7 @@ function main()
 		elseif count
 			COUNT(FORMAT_DATA, false)
 		else
-			println(join(FORMAT_DATA, "\n"))
+			print(join(FORMAT_DATA, "\n"))
 		end
 	end
 
