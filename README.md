@@ -53,7 +53,6 @@
 *  --fragment            print url fragment
 *  --format FORMAT       Specify a custom format (default: "")
 *  --json                JSON encoded url/format objects
-*  --show                show url objects in texts
 *  --decode              simple url & html decode
 *  -c                    count and sort descending
 *  --cn                  count and sort descending with numbers
@@ -173,36 +172,6 @@
         "parameters_value_count": 2
     }
 ]
-~~~
-
-<br>
-
-* using --show option 
-~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --show
-
-* rawurl:         https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11
-* scheme:         https
-* username:       admin
-* password:       1234
-* auth:           admin:1234
-* host:           auth.admin-user.company.co.com
-* subdomain:      auth.admin-user
-* domain:         company
-* tld:            co.com
-* port:           443
-* path:           /dir1/dir2/file.js
-* directory:      /dir1/dir2
-* file:           file.js
-* file_name:      file
-* file_ext:       js
-* query:          ?id=44&status=null&log
-* fragment:       page~11
-* subdomain_comb: auth.admin-user auth admin user admin-user
-* parameters:     id status log
-* params count:   3
-* values:         44 null
-* value count:    2
 ~~~
 
 
