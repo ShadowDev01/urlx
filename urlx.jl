@@ -14,7 +14,7 @@ function Format(urls::Vector{String}, format::String)
 		try
 			url = URL(u)
 			push!(
-				format_data,
+				FORMAT_DATA,
 				replace(
 					format,
 					"%sc" => url.scheme,
