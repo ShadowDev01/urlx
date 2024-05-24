@@ -1,11 +1,11 @@
 include("src/args.jl")
 include("src/URL.jl")
 
-DATA = String[]                                 # used for other other parts of url
-PARAMS = String[]                               # used for --keys to print query parameters
-VALS = String[]                                 # used for --values to print query parameters values
-KEYPAIRR = String[]                             # used for --keypairs to print query keypairs
-FORMAT_DATA = String[]                          # used for --format
+DATA = String[]                                  # used for other other parts of url
+PARAMS = String[]                                # used for --keys to print query parameters
+VALS = String[]                                  # used for --values to print query parameters values
+KEYPAIRS = String[]                              # used for --keypairs to print query keypairs
+FORMAT_DATA = String[]                           # used for --format
 JSON_DATA = Vector{OrderedDict{String, Any}}()   # used for --json
 
 # called when --format passed
@@ -110,7 +110,7 @@ function keypairs(urls::Vector{String})
 
 			# make pair parameters with their values with =
 			for (param, value) in Iterators.zip(params, values)
-				push!(KEYPAIRR, "$param=$value")
+				push!(KEYPAIRS, "$param=$value")
 			end
 		catch
 			@error "can't process this url 😕 but I did the rest 😉" u
@@ -197,11 +197,11 @@ function main()
 	if arguments["keypairs"]
 		keypairs(urls)
 		if countNumber
-			COUNT(KEYPAIRR, true)
+			COUNT(KEYPAIRS, true)
 		elseif count
-			COUNT(KEYPAIRR, false)
+			COUNT(KEYPAIRS, false)
 		else
-			print(join(unique(KEYPAIRR), "\n"))
+			print(join(unique(KEYPAIRS), "\n"))
 		end
 	end
 
