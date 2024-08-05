@@ -66,7 +66,7 @@ function ARGUMENTS()
 		help = "print url password"
 		action = :store_true
 
-		"--authenticate"
+		"--auth"
 		help = "print url auth"
 		action = :store_true
 
@@ -106,7 +106,7 @@ function ARGUMENTS()
 		help = "print url file name"
 		action = :store_true
 
-		"--file_extension"
+		"--file_ext"
 		help = "print url ext"
 		action = :store_true
 

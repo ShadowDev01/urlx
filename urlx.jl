@@ -34,19 +34,19 @@ function Format(urls::Vector{String}, format::String)
 					"%di" => url.directory,
 					"%fi" => url.file,
 					"%fn" => url.file_name,
-					"%fe" => url.file_extension,
+					"%fe" => url.file_ext,
 					"%qu" => url.query,
 					"%QU" => url._query,
 					"%fr" => url.fragment,
 					"%FR" => url._fragment,
-					"%pr" => join(url.parameters, " "),
-					"%PR" => join(url.parameters, "\n"),
-					"%va" => join(url.parameters_value, " "),
-					"%VA" => join(url.parameters_value, "\n"),
+					"%pr" => join(url.query_params, " "),
+					"%PR" => join(url.query_params, "\n"),
+					"%va" => join(url.query_values, " "),
+					"%VA" => join(url.query_values, "\n"),
 				),
 			)
 		catch
-			@error "can't process this url 😕 but I did the rest 😉" u
+			@error "something wrong in processing below url 😕 but I did the rest 😉\nurl = $(u)"
 			continue
 		end
 	end
@@ -59,7 +59,7 @@ function PARTS(urls::Vector{String}, switch::String)
 			global urle = URL(u)
 			eval(Meta.parse("!isempty(urle.$switch) && push!(DATA, urle.$switch)"))
 		catch
-			@error "can't process this url 😕 but I did the rest 😉" u
+			@error "something wrong in processing below url 😕 but I did the rest 😉\nurl = $(u)"
 			continue
 		end
 	end
@@ -70,9 +70,9 @@ function KEYS(urls::Vector{String})
 	Threads.@threads for u in urls
 		try
 			url = URL(u)
-			append!(PARAMS, url.parameters)
+			append!(PARAMS, url.query_params)
 		catch
-			@error "can't process this url 😕 but I did the rest 😉" u
+			@error "something wrong in processing below url 😕 but I did the rest 😉\nurl = $(u)"
 			continue
 		end
 	end
@@ -83,9 +83,9 @@ function VALUES(urls::Vector{String})
 	Threads.@threads for u in urls
 		try
 			url = URL(u)
-			append!(VALS, url.parameters_value)
+			append!(VALS, url.query_values)
 		catch
-			@error "can't process this url 😕 but I did the rest 😉" u
+			@error "something wrong in processing below url 😕 but I did the rest 😉\nurl = $(u)"
 			continue
 		end
 	end
@@ -97,23 +97,11 @@ function keypairs(urls::Vector{String})
 		try
 			# extract wanted url sections
 			url = URL(u)
-			params = url.parameters
-			values = url.parameters_value
-			diff = abs(url.parameters_count - url.parameters_value_count)
-
-			# parameters with no value will pair with ""
-			if url.parameters_count > url.parameters_value_count
-				for i ∈ 1:diff
-					push!(values, "")
-				end
-			end
-
-			# make pair parameters with their values with =
-			for (param, value) in Iterators.zip(params, values)
-				push!(KEYPAIRS, "$param=$value")
+			for (key, value) in url.query_paires
+				println(key, "=", value)
 			end
 		catch
-			@error "can't process this url 😕 but I did the rest 😉" u
+			@error "something wrong in processing below url 😕 but I did the rest 😉\nurl = $(u)"
 			continue
 		end
 	end
@@ -136,27 +124,46 @@ end
 
 
 function main()
-	arguments = ARGUMENTS()             # passed user cli arguments
+	args = ARGUMENTS()             # passed user cli args
 
-	count::Bool = arguments["c"]
-	countNumber::Bool = arguments["cn"]
+	count::Bool = args["c"]
+	countNumber::Bool = args["cn"]
 
-	if !isnothing(arguments["url"])     # in order not to interfere with the switches -u / -U
-		urls::Vector{String} = [arguments["url"]]
-	elseif !isnothing(arguments["urls"])
+	if !isnothing(args["url"])     # in order not to interfere with the switches -u / -U
+		urls::Vector{String} = [args["url"]]
+	elseif !isnothing(args["urls"])
 		try
-			urls = readlines(arguments["urls"])
+			urls = readlines(args["urls"])
 		catch err
-			@error "there is no file: $(arguments["urls"])"
+			@error "there is no file: $(args["urls"])"
 			exit(0)
 		end
-	elseif arguments["stdin"]
+	elseif args["stdin"]
 		urls = unique(readlines(stdin))
 	end
 
 	urls = filter(!isempty, urls)       # remove empty lines
 
-	switches = filter(item -> arguments[item], ["scheme", "username", "password", "authenticate", "host", "domain", "subdomain", "tld", "port", "path", "directory", "file", "file_name", "file_extension", "query", "fragment"])
+	switches = filter(item -> args[item],
+		[
+			"scheme",
+			"username",
+			"password",
+			"auth",
+			"host",
+			"domain",
+			"subdomain",
+			"tld",
+			"port",
+			"path",
+			"directory",
+			"file",
+			"file_name",
+			"file_ext",
+			"query",
+			"fragment",
+		],
+	)
 
 	if !isempty(switches)
 		PARTS(urls, switches[1])
@@ -170,7 +177,7 @@ function main()
 	end
 
 	# manage --keys
-	if arguments["keys"]
+	if args["keys"]
 		KEYS(urls)
 		if countNumber
 			COUNT(PARAMS, true)
@@ -182,7 +189,7 @@ function main()
 	end
 
 	# manage --values
-	if arguments["values"]
+	if args["values"]
 		VALUES(urls)
 		if countNumber
 			COUNT(VALS, true)
@@ -194,7 +201,7 @@ function main()
 	end
 
 	# manage --keypairs
-	if arguments["keypairs"]
+	if args["keypairs"]
 		keypairs(urls)
 		if countNumber
 			COUNT(KEYPAIRS, true)
@@ -206,8 +213,8 @@ function main()
 	end
 
 	# manage --format
-	if !isempty(arguments["format"])
-		Format(urls, arguments["format"])
+	if !isempty(args["format"])
+		Format(urls, args["format"])
 		if countNumber
 			COUNT(FORMAT_DATA, true)
 		elseif count
@@ -218,21 +225,21 @@ function main()
 	end
 
 	# manage --json
-	if arguments["json"]
+	if args["json"]
 		for u in urls
 			try
 				url = URL(u)
 				Json(url)
 			catch
-				@error "can't process this url 😕 but I did the rest 😉" u
-				continue
+				@error "something wrong in processing below url 😕\nurl = $(u)"
+				exit(0)
 			end
 		end
 		JSON.print(JSON_DATA, 4)
 	end
 
 	# manage --decode
-	if arguments["decode"]
+	if args["decode"]
 		for url in urls
 			println(url |> URL_Decode |> HTML_Decode)
 		end

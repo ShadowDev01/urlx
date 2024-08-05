@@ -35,7 +35,7 @@
 *  --scheme              print url scheme
 *  --username            print url username
 *  --password            print url password
-*  --authenticate        print url authenticate
+*  --auth                print url authenticate
 *  --host                print url host
 *  --domain              print url domain
 *  --subdomain           print url subdomain
@@ -45,7 +45,7 @@
 *  --directory           print url directory
 *  --file                print url file
 *  --file_name           print url file_name
-*  --file_extension      print url file_extension
+*  --file_ext            print url file_extension
 *  --query               print url query
 *  --keys                print all keys in query in unique
 *  --values              print all values in query in unique
@@ -134,12 +134,12 @@
 
 [
     {
-        "rawurl": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
-        "url": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
+        "raw_url": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
+        "decoded_url": "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11",
         "scheme": "https",
         "username": "admin",
         "password": "1234",
-        "authenticate": "admin:1234",
+        "auth": "admin:1234",
         "host": "auth.admin-user.company.co.com",
         "subdomain": "auth.admin-user",
         "subdomain_combination": [
@@ -158,18 +158,23 @@
         "file_name": "file",
         "file_ext": "js",
         "query": "id=44&status=null&log",
-        "fragment": "page~11",
-        "parameters": [
+        "query_params": [
             "id",
             "status",
             "log"
         ],
-        "parameters_count": 3,
-        "parameters_value": [
+        "query_values": [
             "44",
             "null"
         ],
-        "parameters_value_count": 2
+        "query_paires": {
+            "id": "44",
+            "status": null,
+            "log": ""
+        },
+        "query_params_count": 3,
+        "query_values_count": 2,
+        "fragment": "page~11"
     }
 ]
 ~~~
@@ -190,7 +195,7 @@ log
 
 * using --keys -c 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys -c
 
 id
 status
@@ -201,7 +206,7 @@ log
 
 * using --keys --cn 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys --cn
 
 id: 1
 status: 1
@@ -212,7 +217,7 @@ log: 1
 
 * using --values
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --values
 
 44
 null
@@ -222,7 +227,7 @@ null
 
 * using --values -c
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --values -c
 
 44
 null
@@ -232,7 +237,7 @@ null
 
 * using --values --cn
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --values --cn
 
 44: 1
 null: 1
@@ -253,7 +258,7 @@ log=
 
 * using --keypairs -c
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs -c
 
 id=44
 status=null
@@ -264,7 +269,7 @@ log=
 
 * using --keypairs --cn
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs --cn
 
 id=44: 1
 status=null: 1
@@ -295,7 +300,7 @@ https
 
 * using --format [string] --cn
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc %do %po"
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc %do %po" --cn
 
 https company 443: 1
 ~~~
