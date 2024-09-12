@@ -17,7 +17,7 @@ struct URL
 	scheme::String                          # https
 	username::String                        # admin
 	password::String                        # test1234
-	auth::String                   			# admin:test1234
+	auth::String                   # admin:test1234
 	host::String                            # login.admin-auth.company.co.com 
 	subdomain::String                       # login.admin-auth
 	domain::String                          # company
@@ -27,13 +27,13 @@ struct URL
 	directory::String                       # /admin/desk
 	file::String                            # master.js
 	file_name::String                       # master
-	file_ext::String                  		# js
+	file_ext::String                  # js
 	query::String                           # A=line+25&B=#12&C
 	query_params::Vector{String}            # ["A", "B", "C"]
-	query_values::Vector{String}       		# ["line+25", "#12"]
-	query_paires::OrderedDict{String, Any}	# {"A":"line+25", "B":"#12", "C":null}
+	query_values::Vector{String}       # ["line+25", "#12"]
+	query_paires::OrderedDict{String, Any}# {"A":"line+25", "B":"#12", "C":null}
 	query_params_count::Int32               # 3
-	query_values_count::Int32           	# 2
+	query_values_count::Int32           # 2
 	fragment::String                        # justfortest
 
 	# From the beginning of URL to the given section
@@ -261,17 +261,21 @@ function Json(url::URL)
 		"file_name" => url.file_name,
 		"file_ext" => url.file_ext,
 		"query" => chopprefix(url.query, "?"),
+		"fragment" => url.fragment,
 		"query_params" => url.query_params,
 		"query_values" => url.query_values,
 		"query_paires" => url.query_paires,
 		"query_params_count" => url.query_params_count,
 		"query_values_count" => url.query_values_count,
-		"fragment" => url.fragment,
 	)
+
+	url.raw_url == url.decoded_url && pop!(custom_json, "decoded_url")
+
 	for (key, value) in pairs(custom_json)
 		if isempty(value) || value == [""] || value == 0
 			pop!(custom_json, key)
 		end
 	end
+	
 	push!(JSON_DATA, custom_json)
 end
