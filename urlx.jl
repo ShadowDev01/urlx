@@ -129,9 +129,9 @@ function main()
 	count::Bool = args["c"]
 	countNumber::Bool = args["cn"]
 
-	if !isnothing(args["u"])     # in order not to interfere with the switches -u / -U
+	if !isempty(args["u"])     # in order not to interfere with the switches -u / -U
 		urls::Vector{String} = [args["u"]]
-	elseif !isnothing(args["ul"])
+	elseif !isempty(args["ul"])
 		try
 			urls = readlines(args["ul"])
 		catch err
