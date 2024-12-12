@@ -5,7 +5,7 @@
 
 # Install
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-                                              *** julia ***
+                                             *** julia ***
 
 # install julia: https://julialang.org/downloads/   or   snap install julia --classic
 # then run this commands in terminal:
@@ -26,40 +26,46 @@
 
 # Switches
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# optional arguments:
+	 _   _ ____  _    __  __
+	| | | |  _ \\| |   \\ \\/ /
+	| | | | |_) | |    \\  / 
+	| |_| |  _ <| |___ /  \\ 
+	 \\___/|_| \\_\\_____/_/\\_\\  
 
-*  -h, --help            show this help message and exit
-*  -u, --url             single url
-*  -U, --urls            list of urls in file
-*  --stdin               read url(s) from stdin
-*  --scheme              print url scheme
-*  --username            print url username
-*  --password            print url password
-*  --auth                print url authenticate
-*  --host                print url host
-*  --domain              print url domain
-*  --subdomain           print url subdomain
-*  --tld                 print url tld
-*  --port                print url port
-*  --path                print url path
-*  --directory           print url directory
-*  --file                print url file
-*  --file_name           print url file_name
-*  --file_ext            print url file_extension
-*  --query               print url query
-*  --keys                print all keys in query in unique
-*  --values              print all values in query in unique
-*  --keypairs            key=value pairs from the query string (one per line)
-*  --fragment            print url fragment
-*  --format FORMAT       Specify a custom format (default: "")
-*  --json                JSON encoded url/format objects
-*  --decode              simple url & html decode
-*  -c                    count and sort descending
-*  --cn                  count and sort descending with numbers
-*  -o, --output          save output in file
+
+#optional arguments:
+  -u     			  single url
+  -ul     			  multiple urls in file
+  -stdin              read url(s) from stdin
+  -scheme             print url scheme
+  -username           print url username
+  -password           print url password
+  -auth               print url auth
+  -host               print url host
+  -domain             print url domain
+  -subdomain          print url subdomain
+  -tld                print url tld
+  -port               print url port
+  -path               print url path
+  -directory          print url directory
+  -file               print url file
+  -file_name          print url file name
+  -file_ext           print url ext
+  -query              print url query
+  -keys               print all keys in query in unique
+  -values             print all values in query in unique
+  -keypairs           key=value pairs from the query string (one per line)
+  -fragment           print url fragment
+  -format FORMAT      Specify a custom format (default: "")
+  -json               JSON encoded url/format objects
+  -decode             simple url & html decode
+  -c                  count and sort descending
+  -cn                 count and sort descending with numbers
+  -o                  save output in file
+  -h                  show this help message and exit
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-# --format Directives
+# -format Directives
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 %sc  =>  url scheme
 %SC  =>  from the beginning of url to the scheme
@@ -113,24 +119,24 @@
 
 * give url(s) in file to urlx
 ~~~
-> julia urlx.jl -U [file] [switches]
+> julia urlx.jl -ul [file] [switches]
 ~~~
 
 <br>
 
 * give url(s) from stdin to urlx
 ~~~
-> cat [file] | julia urlx.jl --stdin [switches]
+> cat [file] | julia urlx.jl -stdin [switches]
 
 
-> echo "url" | julia urlx.jl --stdin [switches]
+> echo "url" | julia urlx.jl -stdin [switches]
 ~~~
 
 <br>
 
-* using --json option
+* using -json option
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --json
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -json
 
 [
     {
@@ -182,9 +188,9 @@
 
 <br>
 
-* using --keys 
+* using -keys 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -keys
 
 id
 status
@@ -193,9 +199,9 @@ log
 
 <br>
 
-* using --keys -c 
+* using -keys -c 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys -c
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -keys -c
 
 id
 status
@@ -204,9 +210,9 @@ log
 
 <br>
 
-* using --keys --cn 
+* using -keys -cn 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keys --cn
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -keys -cn
 
 id: 1
 status: 1
@@ -215,9 +221,9 @@ log: 1
 
 <br>
 
-* using --values
+* using -values
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --values
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -values
 
 44
 null
@@ -225,9 +231,9 @@ null
 
 <br>
 
-* using --values -c
+* using -values -c
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --values -c
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -values -c
 
 44
 null
@@ -235,9 +241,9 @@ null
 
 <br>
 
-* using --values --cn
+* using -values -cn
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --values --cn
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -values -cn
 
 44: 1
 null: 1
@@ -245,9 +251,9 @@ null: 1
 
 <br>
 
-* using --keypairs 
+* using -keypairs 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -keypairs
 
 id=44
 status=null
@@ -256,9 +262,9 @@ log=
 
 <br>
 
-* using --keypairs -c
+* using -keypairs -c
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs -c
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -keypairs -c
 
 id=44
 status=null
@@ -267,9 +273,9 @@ log=
 
 <br>
 
-* using --keypairs --cn
+* using -keypairs -cn
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --keypairs --cn
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -keypairs -cn
 
 id=44: 1
 status=null: 1
@@ -278,29 +284,29 @@ log=: 1
 
 <br>
 
-* using --format option
+* using -format option
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc"
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -format "%sc"
 
 https
 ~~~
 
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc %do %po"
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -format "%sc %do %po"
 
 https company 443
 ~~~
 
-* using --format [string] -c
+* using -format [string] -c
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc" -c
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -format "%sc" -c
 
 https
 ~~~
 
-* using --format [string] --cn
+* using -format [string] -cn
 ~~~
-> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" --format "%sc %do %po" --cn
+> julia urlx.jl -u "https://admin:1234@auth.admin-user.company.co.com:443/dir1/dir2/file.js?id=44&status=null&log#page~11" -format "%sc %do %po" -cn
 
 https company 443: 1
 ~~~

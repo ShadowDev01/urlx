@@ -1,159 +1,146 @@
-using ArgParse
+
+function single_pass(param::String)
+	idx = findfirst(==(param), ARGS) + 1
+	if isassigned(ARGS, idx) && !startswith(ARGS[idx], "-")
+		return ARGS[idx]
+	else
+		return ""
+	end
+end
 
 function ARGUMENTS()
-	cyan::String = "\u001b[36m"
-	yellow::String = "\u001b[33m"
-	nc::String = "\033[0m"
+	("-h" ∈ ARGS) && (println(help), exit(0))
 
-	settings = ArgParseSettings(
-		prog = "urlx",
-		description = """
-		  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n
-		  **** extract url items ***
-		  \n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-		  """,
-		epilog = """
-			  $(yellow)--format dirctives:$(nc)\n
-
-			  $(cyan)%sc$(nc)  =>  url scheme\n
-			  $(cyan)%SC$(nc)  =>  from the beginning of url to the scheme\n
-			  $(cyan)%un$(nc)  =>  url username\n
-			  $(cyan)%pw$(nc)  =>  url password\n
-			  $(cyan)%au$(nc)  =>  from the beginning of url to the authenticate\n
-			  $(cyan)%ho$(nc)  =>  url host\n
-			  $(cyan)%HO$(nc)  =>  from the beginning of url to the host\n
-			  $(cyan)%sd$(nc)  =>  url subdomain\n
-			  $(cyan)%do$(nc)  =>  url domain\n
-			  $(cyan)%tl$(nc)  =>  url tld\n
-			  $(cyan)%po$(nc)  =>  url port\n
-			  $(cyan)%PO$(nc)  =>  from the beginning of url to the port\n
-			  $(cyan)%pa$(nc)  =>  url path\n
-			  $(cyan)%PA$(nc)  =>  from the beginning of url to the path\n
-			  $(cyan)%di$(nc)  =>  url directory\n
-			  $(cyan)%fi$(nc)  =>  url file\n
-			  $(cyan)%fn$(nc)  =>  url file_name\n
-			  $(cyan)%fe$(nc)  =>  url file_extension\n
-			  $(cyan)%qu$(nc)  =>  url query\n
-			  $(cyan)%QU$(nc)  =>  from the beginning of url to the query\n
-			  $(cyan)%fr$(nc)  =>  url fragment\n
-			  $(cyan)%FR$(nc)  =>  from the beginning of url to the fragment\n
-			  $(cyan)%pr$(nc)  =>  url parameters in space separated\n
-			  $(cyan)%PR$(nc)  =>  url parameters in new line\n
-			  $(cyan)%va$(nc)  =>  url values of parameters in space separated\n
-			  $(cyan)%VA$(nc)  =>  url values of parameters in new line
-		  """,
+	args = Dict{String, Any}(
+		"u" => "",
+		"ul" => "",
+		"o" => "",
+		"format" => "",
+		"stdin" => false,
+		"scheme" => false,
+		"username" => false,
+		"password" => false,
+		"auth" => false,
+		"host" => false,
+		"domain" => false,
+		"subdomain" => false,
+		"tld" => false,
+		"port" => false,
+		"path" => false,
+		"directory" => false,
+		"file" => false,
+		"file_name" => false,
+		"file_ext" => false,
+		"query" => false,
+		"keys" => false,
+		"values" => false,
+		"keypairs" => false,
+		"fragment" => false,
+		"json" => false,
+		"decode" => false,
+		"c" => false,
+		"cn" => false,
 	)
-	@add_arg_table settings begin
-		"-u", "--url"
-		help = "single url"
 
-		"-U", "--urls"
-		help = "multiple urls in file"
+	("-stdin" ∈ ARGS) && (args["stdin"] = true)
+	("-scheme" ∈ ARGS) && (args["scheme"] = true)
+	("-username" ∈ ARGS) && (args["username"] = true)
+	("-password" ∈ ARGS) && (args["password"] = true)
+	("-auth" ∈ ARGS) && (args["auth"] = true)
+	("-host" ∈ ARGS) && (args["host"] = true)
+	("-domain" ∈ ARGS) && (args["domain"] = true)
+	("-subdomain" ∈ ARGS) && (args["subdomain"] = true)
+	("-tld" ∈ ARGS) && (args["tld"] = true)
+	("-port" ∈ ARGS) && (args["port"] = true)
+	("-path" ∈ ARGS) && (args["path"] = true)
+	("-directory" ∈ ARGS) && (args["directory"] = true)
+	("-file" ∈ ARGS) && (args["file"] = true)
+	("-file_name" ∈ ARGS) && (args["file_name"] = true)
+	("-file_ext" ∈ ARGS) && (args["file_ext"] = true)
+	("-query" ∈ ARGS) && (args["query"] = true)
+	("-keys" ∈ ARGS) && (args["keys"] = true)
+	("-values" ∈ ARGS) && (args["values"] = true)
+	("-keypairs" ∈ ARGS) && (args["keypairs"] = true)
+	("-fragment" ∈ ARGS) && (args["fragment"] = true)
+	("-json" ∈ ARGS) && (args["json"] = true)
+	("-decode" ∈ ARGS) && (args["decode"] = true)
+	("-c" ∈ ARGS) && (args["c"] = true)
+	("-cn" ∈ ARGS) && (args["cn"] = true)
 
-		"--stdin"
-		help = "read url(s) from stdin"
-		action = :store_true
-
-		"--scheme"
-		help = "print url scheme"
-		action = :store_true
-
-		"--username"
-		help = "print url username"
-		action = :store_true
-
-		"--password"
-		help = "print url password"
-		action = :store_true
-
-		"--auth"
-		help = "print url auth"
-		action = :store_true
-
-		"--host"
-		help = "print url host"
-		action = :store_true
-
-		"--domain"
-		help = "print url domain"
-		action = :store_true
-
-		"--subdomain"
-		help = "print url subdomain"
-		action = :store_true
-
-		"--tld"
-		help = "print url tld"
-		action = :store_true
-
-		"--port"
-		help = "print url port"
-		action = :store_true
-
-		"--path"
-		help = "print url path"
-		action = :store_true
-
-		"--directory"
-		help = "print url directory"
-		action = :store_true
-
-		"--file"
-		help = "print url file"
-		action = :store_true
-
-		"--file_name"
-		help = "print url file name"
-		action = :store_true
-
-		"--file_ext"
-		help = "print url ext"
-		action = :store_true
-
-		"--query"
-		help = "print url query"
-		action = :store_true
-
-		"--keys"
-		help = "print all keys in query in unique"
-		action = :store_true
-
-		"--values"
-		help = "print all values in query in unique"
-		action = :store_true
-
-		"--keypairs"
-		help = "key=value pairs from the query string (one per line)"
-		action = :store_true
-
-		"--fragment"
-		help = "print url fragment"
-		action = :store_true
-
-		"--format"
-		help = "Specify a custom format"
-		arg_type = String
-		default = ""
-
-		"--json"
-		help = "JSON encoded url/format objects"
-		action = :store_true
-
-		"--decode"
-		help = "simple url & html decode"
-		action = :store_true
-
-		"-c"
-		help = "count and sort descending"
-		action = :store_true
-
-		"--cn"
-		help = "count and sort descending with numbers"
-		action = :store_true
-
-		"-o", "--output"
-		help = "save output in file"
+	for itm in ("-u", "-ul", "-format", "-o")
+		if itm ∈ ARGS
+			res = single_pass(itm)
+			!isempty(res) && (args[chopprefix(itm, "-")] = res)
+		end
 	end
-	parsed_args = parse_args(ARGS, settings)
-	return parsed_args
+
+	args
 end
+
+const help = """
+	 _   _ ____  _    __  __
+	| | | |  _ \\| |   \\ \\/ /
+	| | | | |_) | |    \\  / 
+	| |_| |  _ <| |___ /  \\ 
+	 \\___/|_| \\_\\_____/_/\\_\\  
+
+
+optional arguments:
+  -u     			  single url
+  -ul     			  multiple urls in file
+  -stdin              read url(s) from stdin
+  -scheme             print url scheme
+  -username           print url username
+  -password           print url password
+  -auth               print url auth
+  -host               print url host
+  -domain             print url domain
+  -subdomain          print url subdomain
+  -tld                print url tld
+  -port               print url port
+  -path               print url path
+  -directory          print url directory
+  -file               print url file
+  -file_name          print url file name
+  -file_ext           print url ext
+  -query              print url query
+  -keys               print all keys in query in unique
+  -values             print all values in query in unique
+  -keypairs           key=value pairs from the query string (one per line)
+  -fragment           print url fragment
+  -format FORMAT      Specify a custom format (default: "")
+  -json               JSON encoded url/format objects
+  -decode             simple url & html decode
+  -c                  count and sort descending
+  -cn                 count and sort descending with numbers
+  -o, -output OUTPUT  save output in file
+  -h, -help           show this help message and exit
+
+-format dirctives:
+%sc  =>  url scheme
+%SC  =>  from the beginning of url to the scheme
+%un  =>  url username
+%pw  =>  url password
+%au  =>  from the beginning of url to the authenticate
+%ho  =>  url host
+%HO  =>  from the beginning of url to the host
+%sd  =>  url subdomain
+%do  =>  url domain
+%tl  =>  url tld
+%po  =>  url port
+%PO  =>  from the beginning of url to the port
+%pa  =>  url path
+%PA  =>  from the beginning of url to the path
+%di  =>  url directory
+%fi  =>  url file
+%fn  =>  url file_name
+%fe  =>  url file_extension
+%qu  =>  url query
+%QU  =>  from the beginning of url to the query
+%fr  =>  url fragment
+%FR  =>  from the beginning of url to the fragment
+%pr  =>  url parameters in space separated
+%PR  =>  url parameters in new line
+%va  =>  url values of parameters in space separated
+%VA  =>  url values of parameters in new line
+"""

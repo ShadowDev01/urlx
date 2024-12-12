@@ -1,4 +1,4 @@
-FROM julia:1.10.4
+FROM julia:1.11.2
 RUN julia -e 'using Pkg; Pkg.add("ArgParse"); Pkg.add("JSON"); Pkg.add("OrderedCollections")'
 RUN mkdir /urlx
 WORKDIR /urlx/

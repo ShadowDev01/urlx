@@ -129,13 +129,13 @@ function main()
 	count::Bool = args["c"]
 	countNumber::Bool = args["cn"]
 
-	if !isnothing(args["url"])     # in order not to interfere with the switches -u / -U
-		urls::Vector{String} = [args["url"]]
-	elseif !isnothing(args["urls"])
+	if !isnothing(args["u"])     # in order not to interfere with the switches -u / -U
+		urls::Vector{String} = [args["u"]]
+	elseif !isnothing(args["ul"])
 		try
-			urls = readlines(args["urls"])
+			urls = readlines(args["ul"])
 		catch err
-			@error "there is no file: $(args["urls"])"
+			@error "there is no file: $(args["ul"])"
 			exit(0)
 		end
 	elseif args["stdin"]
